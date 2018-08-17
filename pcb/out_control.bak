@@ -1,0 +1,313 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:ESP8266
+LIBS:Relay
+LIBS:out_control-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L NodeMCU1.0(ESP-12E) NodeMCU1
+U 1 1 5B6B7953
+P 5400 3200
+F 0 "NodeMCU1" H 5400 4050 60  0000 C CNN
+F 1 "NodeMCU1.0(ESP-12E)" H 5400 2350 60  0000 C CNN
+F 2 "nodemcu:NodeMCU_Amica_R2" H 4800 2350 60  0001 C CNN
+F 3 "" H 4800 2350 60  0000 C CNN
+	1    5400 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L L7805 U1
+U 1 1 5B6B7A60
+P 3900 2050
+F 0 "U1" H 3750 2175 50  0000 C CNN
+F 1 "L7805" H 3900 2175 50  0000 L CNN
+F 2 "Power_Integrations:TO-220" H 3925 1900 50  0001 L CIN
+F 3 "" H 3900 2000 50  0001 C CNN
+	1    3900 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L BC548 BC1
+U 1 1 5B6B7B49
+P 6950 2600
+F 0 "BC1" H 7150 2675 50  0000 L CNN
+F 1 "BC548" H 7150 2600 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 7150 2525 50  0001 L CIN
+F 3 "" H 6950 2600 50  0001 L CNN
+	1    6950 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_01x02 J1
+U 1 1 5B71DCCD
+P 3200 3050
+F 0 "J1" H 3200 3150 50  0000 C CNN
+F 1 "Conn_01x02" H 3200 2850 50  0000 C CNN
+F 2 "Connectors:JACK_ALIM" H 3200 3050 50  0001 C CNN
+F 3 "" H 3200 3050 50  0001 C CNN
+	1    3200 3050
+	-1   0    0    1   
+$EndComp
+$Comp
+L SANYOU_SRD_Form_C Relay1
+U 1 1 5B71E44B
+P 8650 2500
+F 0 "Relay1" H 9100 2650 50  0000 L CNN
+F 1 "SANYOU_SRD_Form_C" H 9100 2550 50  0000 L CNN
+F 2 "Relays_THT:Relay_SPDT_SANYOU_SRD_Series_Form_C" H 10100 2450 50  0001 C CNN
+F 3 "" H 8650 2500 50  0001 C CNN
+	1    8650 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L D D1
+U 1 1 5B71E919
+P 8050 2500
+F 0 "D1" H 8050 2600 50  0000 C CNN
+F 1 "D" H 8050 2400 50  0000 C CNN
+F 2 "Diodes_THT:D_T-1_P10.16mm_Horizontal" H 8050 2500 50  0001 C CNN
+F 3 "" H 8050 2500 50  0001 C CNN
+	1    8050 2500
+	0    1    1    0   
+$EndComp
+$Comp
+L SANYOU_SRD_Form_C Relay2
+U 1 1 5B735F7A
+P 8650 3750
+F 0 "Relay2" H 9100 3900 50  0000 L CNN
+F 1 "SANYOU_SRD_Form_C" H 9100 3800 50  0000 L CNN
+F 2 "Relays_THT:Relay_SPDT_SANYOU_SRD_Series_Form_C" H 10100 3700 50  0001 C CNN
+F 3 "" H 8650 3750 50  0001 C CNN
+	1    8650 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_01x06 Bornera1
+U 1 1 5B735FD9
+P 9950 3050
+F 0 "Bornera1" H 9950 3350 50  0000 C CNN
+F 1 "Conn_01x06" H 9950 2650 50  0000 C CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_4UCON_19963_06x3.5mm_Straight" H 9950 3050 50  0001 C CNN
+F 3 "" H 9950 3050 50  0001 C CNN
+	1    9950 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L BC548 B2
+U 1 1 5B73627F
+P 7400 4250
+F 0 "B2" H 7600 4325 50  0000 L CNN
+F 1 "BC548" H 7600 4250 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 7600 4175 50  0001 L CIN
+F 3 "" H 7400 4250 50  0001 L CNN
+	1    7400 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L D D2
+U 1 1 5B736721
+P 8050 3800
+F 0 "D2" H 8050 3900 50  0000 C CNN
+F 1 "D" H 8050 3700 50  0000 C CNN
+F 2 "Diodes_THT:D_T-1_P10.16mm_Horizontal" H 8050 3800 50  0001 C CNN
+F 3 "" H 8050 3800 50  0001 C CNN
+	1    8050 3800
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3950 2350 3950 4450
+Wire Wire Line
+	3950 2350 3900 2350
+Wire Wire Line
+	4200 3900 4600 3900
+Wire Wire Line
+	4200 2000 4200 3900
+Connection ~ 4200 2050
+Wire Wire Line
+	3400 2050 3600 2050
+Connection ~ 3950 3050
+Wire Wire Line
+	3950 4450 7500 4450
+Wire Wire Line
+	6200 3100 6400 3100
+Wire Wire Line
+	6400 3100 6400 4450
+Connection ~ 6400 4450
+Wire Wire Line
+	8050 2000 8050 2350
+Wire Wire Line
+	8050 2900 8050 2650
+Wire Wire Line
+	8050 2800 8450 2800
+Wire Wire Line
+	7500 3450 8450 3450
+Wire Wire Line
+	8050 3450 8050 3650
+Wire Wire Line
+	7500 4050 8450 4050
+Wire Wire Line
+	8050 4050 8050 3950
+Wire Wire Line
+	4200 2000 8450 2000
+Wire Wire Line
+	8450 2000 8450 2200
+Wire Wire Line
+	7500 2000 7500 3450
+Connection ~ 8050 3450
+Connection ~ 7500 2000
+Wire Wire Line
+	7350 2900 8050 2900
+Connection ~ 8050 2800
+Wire Wire Line
+	7050 2400 7350 2400
+Wire Wire Line
+	7350 2400 7350 2900
+Wire Wire Line
+	7050 2800 7050 4450
+Connection ~ 7050 4450
+Connection ~ 8050 4050
+Wire Wire Line
+	6650 2700 6650 4250
+Wire Wire Line
+	6650 4250 7200 4250
+Connection ~ 8050 2000
+$Comp
+L Conn_01x02 J2
+U 1 1 5B7375E7
+P 3700 2700
+F 0 "J2" H 3700 2800 50  0000 C CNN
+F 1 "Conn_01x02" H 3700 2500 50  0000 C CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_4UCON_19963_02x3.5mm_Straight" H 3700 2700 50  0001 C CNN
+F 3 "" H 3700 2700 50  0001 C CNN
+	1    3700 2700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3600 2500 3400 2500
+Connection ~ 3400 2500
+Wire Wire Line
+	3700 2500 3950 2500
+Connection ~ 3950 2500
+$Comp
+L R R_BC2
+U 1 1 5B737A9D
+P 6450 2750
+F 0 "R_BC2" V 6530 2750 50  0000 C CNN
+F 1 "R" V 6450 2750 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 6380 2750 50  0001 C CNN
+F 3 "" H 6450 2750 50  0001 C CNN
+	1    6450 2750
+	0    1    1    0   
+$EndComp
+$Comp
+L R R_BC1
+U 1 1 5B737B52
+P 6450 2600
+F 0 "R_BC1" V 6530 2600 50  0000 C CNN
+F 1 "R" V 6450 2600 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 6380 2600 50  0001 C CNN
+F 3 "" H 6450 2600 50  0001 C CNN
+	1    6450 2600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6200 2600 6300 2600
+Wire Wire Line
+	6600 2600 6750 2600
+Wire Wire Line
+	6200 2700 6300 2700
+Wire Wire Line
+	6300 2700 6300 2750
+Wire Wire Line
+	6600 2750 6600 2700
+Wire Wire Line
+	6600 2700 6650 2700
+Wire Wire Line
+	8850 2800 8850 2950
+Wire Wire Line
+	8850 2950 9750 2950
+Wire Wire Line
+	8850 4050 9450 4050
+Wire Wire Line
+	9450 4050 9450 3250
+Wire Wire Line
+	9450 3250 9750 3250
+Wire Wire Line
+	8950 2200 9750 2200
+Wire Wire Line
+	9750 2200 9750 2850
+Wire Wire Line
+	8750 2200 8750 2100
+Wire Wire Line
+	8750 2100 9550 2100
+Wire Wire Line
+	9550 2100 9550 3050
+Wire Wire Line
+	9550 3050 9750 3050
+Wire Wire Line
+	8950 3450 8950 3150
+Wire Wire Line
+	8950 3150 9750 3150
+Wire Wire Line
+	8750 3450 8750 3350
+Wire Wire Line
+	8750 3350 9750 3350
+Wire Wire Line
+	3400 2950 3950 2950
+Wire Wire Line
+	3950 2950 3950 3000
+Connection ~ 3950 3000
+Wire Wire Line
+	3400 3050 3500 3050
+Wire Wire Line
+	3500 3050 3500 2050
+Wire Wire Line
+	3500 2050 3550 2050
+Connection ~ 3550 2050
+Wire Wire Line
+	3400 2500 3400 2350
+Wire Wire Line
+	3400 2350 3500 2350
+Connection ~ 3500 2350
+$EndSCHEMATC

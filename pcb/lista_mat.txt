@@ -1,0 +1,7 @@
+1 bornera x 2pin
+2 bornera x 3pin
+1 lm7805
+2 bc548
+2 diodos (chicos)
+2 Resistencias (220 ohm)
+2 relay (5v cuadrados)
