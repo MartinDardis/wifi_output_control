@@ -8,6 +8,9 @@
 #define MAX_LONG_STR 100
 #define OTA_PASS "mdardis"
 #define OTA_MD5 "d4d0f48c29fa625f6acc2bf70a353a0b"
+bool logged = false;
+String USERNAME = "admin";
+String PASSWORD = "admin";
 
 #define GPIO0 D1
 bool gpio0_state=false;
@@ -15,7 +18,6 @@ bool gpio0_state=false;
 bool gpio1_state=false;
 
 #define WPA_PATH "/wireless.txt"
-#define WPA_PATH_OLD "/wireless.old"
 #define AP_SSID "ESP_8266"  
 #define AP_PASS "control"
 
@@ -28,7 +30,10 @@ void startServer();
 void handleindex();
 void handlewifi();
 void handlecss();
-bool write_config_file(String ssid,String pass);
+void handlelogin();
+void handle_nolog();
+void handleerror();
+bool write_wifi_config_file(String ssid,String pass);
 
 void setup() {
   Serial.begin(115200);         
@@ -123,76 +128,6 @@ void startWiFi(){
   }
 }
 
-void startFS(){
-  SPIFFS.begin();
-  Serial.print("\n");
-  Serial.printf("********** Iniciando sistema de Archivos **********\n\n");
-  Serial.printf("Listado de archivos\n");
-  Dir dir = SPIFFS.openDir("/");
-  while (dir.next()) {
-    Serial.print("-> "+dir.fileName()+"\n");
-  }
-}
-
-void startServer(){
-  server.on("/config",[](){
-      File wifi = SPIFFS.open(WPA_PATH,"r");
-      size_t sent = server.streamFile(wifi,"text/html");
-      wifi.close();
-    });
-  server.on("/",handleindex);
-  server.on("/index.html",handleindex);
-  server.on("/wifi.html",handlewifi);
-  server.on("/style.css",handlecss);
-  server.begin();
-  Serial.printf("\n********** HTTP server started **********\n\n");
-}
-
-void handleindex(){
-  Serial.print("-> /index.html");
-  File file = SPIFFS.open("/index.html", "r");  // Open the file
-  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
-  file.close();
-  Serial.print("...SENT\n");
-}
-
-void handlewifi(){
-  Serial.print("-> /wifi.html");
-  if(!SPIFFS.exists("/wifi.html")){
-    Serial.print("...ERROR\n");
-    return;
-  }
-  File file = SPIFFS.open("/wifi.html", "r");  // Open the file
-  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
-  file.close();
-  String ssid = server.arg("ssid");
-  String pass = server.arg("pass");
-  Serial.print("...SENT\n");
-  if( ssid.length()>0 || pass.length()>0){
-    Serial.print("\nRecibed config SSID: "+ ssid +" PASS: "+ pass +"\n");
-    write_config_file(ssid,pass);
-  }
-  if(server.arg("reset") == "on")
-    ESP.restart();
-}
-
-void handlecss(){
-  Serial.print("-> /style.css");
-  File file = SPIFFS.open("/style.css", "r");  // Open the file
-  size_t sent = server.streamFile(file,"text/css");    // Send it to the client
-  file.close();
-  Serial.print("...SENT\n");
-}
-
-bool write_config_file(String rssid,String rpass){
-    SPIFFS.rename(WPA_PATH,WPA_PATH_OLD);
-    File wifi = SPIFFS.open(WPA_PATH,"w");
-    Serial.printf("\t-> Writting wireless config file");
-    wifi.print(rssid+";"+rpass+";\n");
-    wifi.close();
-    Serial.printf("... OK \n");
-}
-
 void startOTA(){
    ArduinoOTA.setPort(8266);
    ArduinoOTA.setHostname("OUT_CONTROL");
@@ -225,6 +160,144 @@ void startOTA(){
  ArduinoOTA.begin();
  Serial.println("\nOTA ENABLED\n");
 }
+
+void startFS(){
+  SPIFFS.begin();
+  Serial.print("\n");
+  Serial.printf("********** Iniciando sistema de Archivos **********\n\n");
+  Serial.printf("Listado de archivos\n");
+  Dir dir = SPIFFS.openDir("/");
+  while (dir.next()) {
+    Serial.print("-> "+dir.fileName()+"\n");
+  }
+}
+
+void startServer(){
+  server.on("/config",[](){
+      if(!logged){
+        handlelogin();
+        return;
+      }
+      File wifi = SPIFFS.open(WPA_PATH,"r");
+      size_t sent = server.streamFile(wifi,"text/html");
+      wifi.close();
+    });
+  server.on("/",[](){
+    if (!logged)
+      handlelogin();
+    else
+      handleindex();
+  });
+  server.on("/disconnect",[](){
+    logged = false;
+    handlelogin();
+    });
+  server.on("/auth",[](){
+    if(logged){
+      handleindex();
+    }
+    else if(server.hasArg("user") && server.hasArg("pass")){
+      if(server.arg("user") == USERNAME && server.arg("pass") == PASSWORD){
+        Serial.printf("AUTH OK\n");
+        logged = true;
+        handleindex();
+      }}
+    else
+        Serial.printf("AUTH ERROR\n");
+        handleerror();
+  });
+  server.on("/index.html",handleindex);
+  server.on("/wifi.html",handlewifi);
+  server.on("/style.css",handlecss);
+  server.begin();
+  Serial.printf("\n********** HTTP server started **********\n\n");
+}
+
+void handlelogin(){
+    if(logged){
+      handleindex();
+      return;
+      }
+    Serial.print("-> /login.html");
+    File file = SPIFFS.open("/login.html", "r");  // Open the file
+    size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+    file.close();
+    Serial.print("...SENT\n");
+}
+
+void handleindex(){
+  if(!logged){
+    handle_nolog();
+    return;
+  }
+  Serial.print("-> /index.html");
+  File file = SPIFFS.open("/index.html", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
+
+void handleerror(){
+    Serial.print("-> /error_log.html");
+  File file = SPIFFS.open("/error_log.html", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
+void handle_nolog(){
+   Serial.print("-> /no_log.html");
+  File file = SPIFFS.open("/no_log.html", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
+void handlewifi(){
+  if(!logged){
+    handle_nolog();
+    return;
+  }
+  Serial.print("-> /wifi.html");
+  if(!SPIFFS.exists("/wifi.html")){
+    Serial.print("...ERROR\n");
+    return;
+  }
+  File file = SPIFFS.open("/wifi.html", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+  file.close();
+  String ssid = server.arg("ssid");
+  String pass = server.arg("pass");
+  Serial.print("...SENT\n");
+  if( ssid.length()>0 || pass.length()>0){
+    Serial.print("\nRecibed config SSID: "+ ssid +" PASS: "+ pass +"\n");
+    write_wifi_config_file(ssid,pass);
+  }
+  if(server.arg("reset") == "do")
+    ESP.restart();
+  if(server.arg("erase") == "do"){
+    if( SPIFFS.exists(WPA_PATH))
+      SPIFFS.remove(WPA_PATH);
+  }
+}
+
+void handlecss(){
+  Serial.print("-> /style.css");
+  File file = SPIFFS.open("/style.css", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/css");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
+
+
+
+bool write_wifi_config_file(String rssid,String rpass){
+    File wifi = SPIFFS.open(WPA_PATH,"w");
+    Serial.printf("\t-> Writting wireless config file");
+    wifi.print(rssid+";"+rpass+";\n");
+    wifi.close();
+    Serial.printf("... OK \n");
+}
+
+
 
 
 
