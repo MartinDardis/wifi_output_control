@@ -23,6 +23,7 @@ Nota: El dispositivo admite conexion Serial USB, **Baudrate: 115200**
 
 * Añadir mas salidas (Rediseño de PCB).
 * Almacenar mas de un ssid a la vez.
+* Añadir cambio de usuario / pass al login
 * Rediseño site ( sacar spanglish)
 * SPIFFS OTA
 * Terminar el readme
