@@ -7,16 +7,21 @@
 		<h3>Martin Dardis - 2018</h3>
 	</head>
 	<body>
-		<a href="index.html"><button class="button" style="button">Back</button></a>
+		<a href="/"><button class="button" style="button">Back</button></a>
+		<div>
 		<p> Set Wifi LAN Settings </p>
-		<form action="" method="GET">
+		<form action="" method="GET" onsubmit="alert('OK - Guardado')">
 			SSID
 			<input type="text" name="ssid">
 			Password
 			<input type="text" name="pass">
+			<input class="button" style="button" type="submit">
 			<p> Additional options </p>
-			<input type="checkbox" name="reset">Reset Device</input>
-			<br><br>
-			<input class="button" onclick="alert('OK - Please Reopen this page')"style="button" type="submit">
+		</form>
+		<form action="" method="GET">
+			<button class="button" type="submit" name="reset" value="do">Reiniciar</button>
+			<button class="button" type="submit" name="erase" value="do">Borrar Configuracion</button>
+
+		</form>
 	</body>
 </html>
