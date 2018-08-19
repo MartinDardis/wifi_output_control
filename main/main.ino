@@ -9,8 +9,7 @@
 #define OTA_PASS "mdardis"
 #define OTA_MD5 "d4d0f48c29fa625f6acc2bf70a353a0b"
 bool logged = false;
-String USERNAME = "admin";
-String PASSWORD = "admin";
+
 
 #define GPIO0 D1
 bool gpio0_state=false;
@@ -20,6 +19,9 @@ bool gpio1_state=false;
 #define WPA_PATH "/wireless.txt"
 #define AP_SSID "ESP_8266"  
 #define AP_PASS "control"
+#define LOG_CONF_PATH "/log.dat"
+String USERNAME = "admin";
+String PASSWORD = "admin";
 
 ESP8266WebServer server(80);
 
@@ -34,6 +36,7 @@ void handlelogin();
 void handle_nolog();
 void handleerror();
 bool write_wifi_config_file(String ssid,String pass);
+bool write_login_config(String new_username, String new_pass);
 
 void setup() {
   Serial.begin(115200);         
@@ -53,27 +56,29 @@ void setup() {
 void loop(void) {
   ArduinoOTA.handle();
   server.handleClient();
-  String gp0=server.arg("gpio0");
-  if (gp0 == "ON" && !gpio0_state){
-    Serial.println("GPIO 0 = ON" );
-    digitalWrite(GPIO0, HIGH);
-    gpio0_state = true;
-  }
-  else if (gp0 == "OFF" && gpio0_state){
-    Serial.println("GPIO 0 = OFF");
-    digitalWrite(GPIO0, LOW);
-    gpio0_state = false;
-  }
-  String gp1=server.arg("gpio1");
-  if (gp1 == "ON" && !gpio1_state){
-    Serial.println("GPIO 1 = ON" );
-    digitalWrite(GPIO1, HIGH);
-    gpio1_state = true;
-  }
-  else if (gp1 == "OFF" && gpio1_state){
-    Serial.println("GPIO 1 = OFF");
-    digitalWrite(GPIO1, LOW);
-    gpio1_state = false;
+  if(logged){
+    String gp0=server.arg("gpio0");
+    if (gp0 == "ON" && !gpio0_state){
+      Serial.println("GPIO 0 = ON" );
+      digitalWrite(GPIO0, HIGH);
+      gpio0_state = true;
+    }
+    else if (gp0 == "OFF" && gpio0_state){
+      Serial.println("GPIO 0 = OFF");
+      digitalWrite(GPIO0, LOW);
+      gpio0_state = false;
+    }
+    String gp1=server.arg("gpio1");
+    if (gp1 == "ON" && !gpio1_state){
+      Serial.println("GPIO 1 = ON" );
+      digitalWrite(GPIO1, HIGH);
+      gpio1_state = true;
+    }
+    else if (gp1 == "OFF" && gpio1_state){
+      Serial.println("GPIO 1 = OFF");
+      digitalWrite(GPIO1, LOW);
+      gpio1_state = false;
+    }
   }
 }
 
@@ -244,6 +249,7 @@ void handleerror(){
   file.close();
   Serial.print("...SENT\n");
 }
+
 void handle_nolog(){
    Serial.print("-> /no_log.html");
   File file = SPIFFS.open("/no_log.html", "r");  // Open the file
@@ -251,6 +257,7 @@ void handle_nolog(){
   file.close();
   Serial.print("...SENT\n");
 }
+
 void handlewifi(){
   if(!logged){
     handle_nolog();
@@ -297,7 +304,22 @@ bool write_wifi_config_file(String rssid,String rpass){
     Serial.printf("... OK \n");
 }
 
+bool write_login_config(String new_username, String new_pass){
+  File login = SPIFFS.open(LOG_CONF_PATH,"w");
+  Serial.printf("\t-> Writting logging config file");
+  login.print(new_username+";"+new_pass+";\n");
+  login.close();
+  Serial.printf("... OK \n");
+}
 
-
-
+void read_login_config(){
+  if(!SPIFFS.exists(LOG_CONF_PATH)){
+    Serial.printf("\n NOT FOUND USER-PASS CONFIG DATA, USE DEFAULT\n");
+    return;
+  }
+  File login = SPIFFS.open(LOG_CONF_PATH,"r");
+  USERNAME = login.readStringUntil(';');
+  PASSWORD = login.readStringUntil(';');
+  login.close();
+}
 
