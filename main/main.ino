@@ -4,10 +4,12 @@
 #include <FS.h>   // Include the SPIFFS library
 #include <ESP8266WebServer.h>
 #include <WiFiClient.h>
+#include <ESP8266HTTPUpdateServer.h>
 
 #include "config.h"
 
 ESP8266WebServer server(80);
+ESP8266HTTPUpdateServer httpUpdater;
 
 void startOTA();
 void startWiFi();
@@ -119,6 +121,8 @@ void startWiFi(){
     Serial.print(WiFi.SSID());              // Tell us what network we're connected to
     Serial.print("\tIP Address: ");
     Serial.print(WiFi.localIP());
+    Serial.print("\t MAC Address: ");
+    Serial.print(WiFi.macAddress());
   }
 }
 
@@ -167,6 +171,12 @@ void startFS(){
 }
 
 void startServer(){
+  server.on("/status",[](){
+    String message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP())+"\tMAC: "+WiFi.macAddress()+"\tSTATUS:"+String(WiFi.status())+"\n";
+    message += "GPIO0 ="+ String(gpio0_state)+" GPIO1="+String(gpio1_state)+"\n";
+    message += "Logged = " + String(logged) +"\n";
+    server.send(200,"text/plain",message);
+    });
   server.on("/config",[](){//Delete this code 
       if(!logged){
         handlelogin();
@@ -212,6 +222,7 @@ void startServer(){
   server.on("/index.html",handleindex);
   server.on("/wifi.html",handlewifi);
   server.on("/style.css",handlecss);
+  httpUpdater.setup(&server,WEB_OTA_PATH,WEB_OTA_NAME,WEB_OTA_PASS);
   server.begin();
   Serial.printf("\n********** HTTP server started **********\n\n");
 }
@@ -281,6 +292,8 @@ void handlewifi(){
   if(server.arg("erase") == "do"){
     if( SPIFFS.exists(WPA_PATH))
       SPIFFS.remove(WPA_PATH);
+    if( SPIFFS.exists(LOG_CONF_PATH))
+      SPIFFS.remove(LOG_CONF_PATH);
   }
 }
 
@@ -336,6 +349,8 @@ void read_login_config(){
   File login = SPIFFS.open(LOG_CONF_PATH,"r");
   USERNAME = login.readStringUntil(';');
   PASSWORD = login.readStringUntil(';');
+  USERNAME.toCharArray(WEB_OTA_NAME,USERNAME.length());
+  PASSWORD.toCharArray(WEB_OTA_PASS,PASSWORD.length());
   login.close();
 }
 

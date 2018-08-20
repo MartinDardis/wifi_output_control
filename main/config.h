@@ -2,6 +2,11 @@
 #define CONFIG_H
 
 #define MAX_LONG_STR 100
+
+#define WEB_OTA_PATH "/update"
+char* WEB_OTA_NAME = "admin";
+char* WEB_OTA_PASS = "admin"; 
+
 #define OTA_NAME "OUT_CONTROL"
 #define OTA_PASS "mdardis" 
 #define OTA_MD5 "d4d0f48c29fa625f6acc2bf70a353a0b"
