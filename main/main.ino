@@ -5,23 +5,7 @@
 #include <ESP8266WebServer.h>
 #include <WiFiClient.h>
 
-#define MAX_LONG_STR 100
-#define OTA_PASS "mdardis"
-#define OTA_MD5 "d4d0f48c29fa625f6acc2bf70a353a0b"
-bool logged = false;
-
-
-#define GPIO0 D1
-bool gpio0_state=false;
-#define GPIO1 D2
-bool gpio1_state=false;
-
-#define WPA_PATH "/wireless.txt"
-#define AP_SSID "ESP_8266"  
-#define AP_PASS "control"
-#define LOG_CONF_PATH "/log.dat"
-String USERNAME = "admin";
-String PASSWORD = "admin";
+#include "config.h"
 
 ESP8266WebServer server(80);
 
@@ -35,8 +19,12 @@ void handlecss();
 void handlelogin();
 void handle_nolog();
 void handleerror();
+void handlechange();
+void handle_change_error();
 bool write_wifi_config_file(String ssid,String pass);
 bool write_login_config(String new_username, String new_pass);
+void read_login_config();
+bool change_user_pass();
 
 void setup() {
   Serial.begin(115200);         
@@ -47,6 +35,7 @@ void setup() {
   pinMode(GPIO0,OUTPUT);
   pinMode(GPIO1,OUTPUT);
   startFS();
+  read_login_config();
   startWiFi();
   startOTA();
   startServer();
@@ -83,8 +72,8 @@ void loop(void) {
 }
 
 void startWiFi(){
-  Serial.printf("\n********** Iniciando WiFi **********\n\n");
-  if(SPIFFS.exists(WPA_PATH)){
+  Serial.printf("\n********** Starting WiFi **********\n\n");
+  if( SPIFFS.exists(WPA_PATH) ){
     WiFi.mode(WIFI_STA);
     char ssid[MAX_LONG_STR];
     char pass[MAX_LONG_STR];
@@ -107,9 +96,9 @@ void startWiFi(){
     WiFi.softAP(AP_SSID,AP_PASS);
     Serial.printf("Using default WiFi config \n");
   }
-  Serial.print("\nIniciando Wifi \nConectando  ");
+  Serial.print("\nStarting Wifi \nConnecting  ");
   int i = 0;
-  for (int i=0 ;WiFi.status() != WL_CONNECTED && i< 181; i++){ // Wait for the Wi-Fi to connect
+  for (int i=0 ;WiFi.status() != WL_CONNECTED && i< (WAIT_TIME*4); i++){ // Wait for the Wi-Fi to connect
     delay(250);
     Serial.printf("*");
     if(digitalRead(LED_BUILTIN)==LOW)
@@ -126,16 +115,16 @@ void startWiFi(){
   else{
     digitalWrite(LED_BUILTIN,HIGH);
     Serial.println('\n');
-    Serial.print("Conectado a: ");
+    Serial.print("Connected to: ");
     Serial.print(WiFi.SSID());              // Tell us what network we're connected to
-    Serial.print("\tDireccion IP: ");
+    Serial.print("\tIP Address: ");
     Serial.print(WiFi.localIP());
   }
 }
 
 void startOTA(){
    ArduinoOTA.setPort(8266);
-   ArduinoOTA.setHostname("OUT_CONTROL");
+   ArduinoOTA.setHostname(OTA_NAME);
    ArduinoOTA.setPassword(OTA_PASS);
    ArduinoOTA.setPasswordHash(OTA_MD5);
  ArduinoOTA.onStart([]() {
@@ -178,7 +167,7 @@ void startFS(){
 }
 
 void startServer(){
-  server.on("/config",[](){
+  server.on("/config",[](){//Delete this code 
       if(!logged){
         handlelogin();
         return;
@@ -211,6 +200,15 @@ void startServer(){
         Serial.printf("AUTH ERROR\n");
         handleerror();
   });
+  server.on("/user_set",[](){
+     if(!change_user_pass()){
+        logged = false;
+        handle_change_error();
+     }
+     logged = false;
+     handlelogin();
+    });
+  server.on("/change_pass.html",handlechange);
   server.on("/index.html",handleindex);
   server.on("/wifi.html",handlewifi);
   server.on("/style.css",handlecss);
@@ -293,8 +291,26 @@ void handlecss(){
   file.close();
   Serial.print("...SENT\n");
 }
+ 
+void handlechange(){
+  if(!logged){
+    handlelogin();
+    return;
+  }
+  Serial.print("-> /change_pass.html");
+  File file = SPIFFS.open("/change_pass.html", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
 
-
+void handle_change_error(){
+  Serial.print("-> /change_error.html");
+  File file = SPIFFS.open("/change_error.html", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/html");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
 
 bool write_wifi_config_file(String rssid,String rpass){
     File wifi = SPIFFS.open(WPA_PATH,"w");
@@ -322,4 +338,23 @@ void read_login_config(){
   PASSWORD = login.readStringUntil(';');
   login.close();
 }
+
+bool change_user_pass(){
+  if(!logged)
+    return false;
+  if(!server.hasArg("actual_user") || ! server.hasArg("actual_pass"))
+    return false;
+  else if (!(server.arg("actual_user") == USERNAME) || !(server.arg("actual_pass")==PASSWORD))
+    return false;
+  else if (!server.hasArg("new_user") || !server.hasArg("new_pass") || !server.hasArg("new_pass_check"))
+    return false;
+  if( !(server.arg("new_pass") == server.arg("new_pass_check") ) )
+    return false;
+  write_login_config(server.arg("new_user"),server.arg("new_pass"));
+  USERNAME = server.arg("new_user");
+  PASSWORD = server.arg("new_pass");
+  Serial.printf("\t\t USER-PASS CHANGED \n");
+  return true;
+}
+
 
