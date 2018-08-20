@@ -294,6 +294,7 @@ void handlewifi(){
       SPIFFS.remove(WPA_PATH);
     if( SPIFFS.exists(LOG_CONF_PATH))
       SPIFFS.remove(LOG_CONF_PATH);
+     ESP.restart();
   }
 }
 
