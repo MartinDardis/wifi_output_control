@@ -350,8 +350,8 @@ void read_login_config(){
   File login = SPIFFS.open(LOG_CONF_PATH,"r");
   USERNAME = login.readStringUntil(';');
   PASSWORD = login.readStringUntil(';');
-  USERNAME.toCharArray(WEB_OTA_NAME,USERNAME.length());
-  PASSWORD.toCharArray(WEB_OTA_PASS,PASSWORD.length());
+  USERNAME.toCharArray(WEB_OTA_NAME,USERNAME.length()+1);
+  PASSWORD.toCharArray(WEB_OTA_PASS,PASSWORD.length()+1);
   login.close();
 }
 

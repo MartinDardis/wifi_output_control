@@ -1,14 +1,25 @@
-# wifi_output_control
-Control de salidas via WiFi controlado con un modulo ESP8266.
+# Control de salidas - ESP8266 WiFi
 
 ## Caracteristicas Generales:
 
 * Modo Station o Access Point automatico
-* Soporte OTA
-* Configuracion red WiFi almacenada en memoria flash.
+* Soporte ARDUINO OTA y WEB OTA (update con firm.bin)
+* Configuracion red WiFi y Login almacenada en memoria flash.
 * Soporta hasta 2 salidas en simultaneo (PCB para 1 o 2).
 
+## Diagrama de Cableado
+
+![PCB](https://github.com/MartinDardis/wifi_output_control/raw/master/pcb_points.png)
+
+Los pines **1,2,3** pertenecen al relay 1, donde 2 (NEGRO) es la entrada, 1 (AMARILLO) es la salida normal abierta y 3 (ROJO) la normal cerrada
+
+Los pines **4,5,6** pertenecen al relay 2, donde 5 (NEGRO) es la entrada, 4 (AMARILLO) es la salida normal abierta y 6 (ROJO) la normal cerrada
+
+Los pines de **VCC** (AZUL) y **GND** (NEGRO), pueden recibir entre 5 y 20 V. No deben ser utilizados si se alimenta el modulo mediante el puerto USB.
+
 ## Primer Uso
+
+Una vez realizado el cableado se procede a la configuracion inicial.
 
 1.  Una vez conectado, alimentar el circuito y esperar que el LED azul quede encendido fijo.
 2.	Ya en modo AP, conectarse a la red del tip ESPXXX (XXX representa los ultimos numeros MAC del dispositivo).
@@ -23,7 +34,5 @@ Nota: El dispositivo admite conexion Serial USB, **Baudrate: 115200**
 
 * Añadir mas salidas (Rediseño de PCB).
 * Almacenar mas de un ssid a la vez.
-* Añadir cambio de usuario / pass al login
-* Rediseño site ( sacar spanglish)
 * SPIFFS OTA
 * Terminar el readme
