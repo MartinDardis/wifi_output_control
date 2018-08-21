@@ -11,9 +11,9 @@
 
 ![PCB](https://github.com/MartinDardis/wifi_output_control/raw/master/pcb_points.png)
 
-Los pines **1,2,3** pertenecen al relay 1, donde 2 (NEGRO) es la entrada, 1 (AMARILLO) es la salida normal abierta y 3 (ROJO) la normal cerrada
+Los pines **1,2,3** pertenecen al relay 1, donde 2 (NEGRO) es la entrada, 1 (AMARILLO) es la salida normal cerrada y 3 (ROJO) la normal abierta.
 
-Los pines **4,5,6** pertenecen al relay 2, donde 5 (NEGRO) es la entrada, 4 (AMARILLO) es la salida normal abierta y 6 (ROJO) la normal cerrada
+Los pines **4,5,6** pertenecen al relay 2, donde 5 (NEGRO) es la entrada, 4 (AMARILLO) es la salida normal cerrada y 6 (ROJO) la normal abierta.
 
 Los pines de **VCC** (AZUL) y **GND** (NEGRO), pueden recibir entre 5 y 20 V. No deben ser utilizados si se alimenta el modulo mediante el puerto USB.
 
