@@ -75,29 +75,28 @@ void loop(void) {
 
 void startWiFi(){
   Serial.printf("\n********** Starting WiFi **********\n\n");
-  if( SPIFFS.exists(WPA_PATH) ){
-    WiFi.mode(WIFI_STA);
-    char ssid[MAX_LONG_STR];
-    char pass[MAX_LONG_STR];
-    File wifi = SPIFFS.open(WPA_PATH,"r");
-    Serial.printf("Reading wireless config file ... OK\n");
-    while(wifi.position() < wifi.size()){
-      String rssid = wifi.readStringUntil(';');
-      rssid.toCharArray(ssid,MAX_LONG_STR);
-      Serial.printf("SSID: %s",ssid);
-      String rpass = wifi.readStringUntil(';');
-      rpass.toCharArray(pass,MAX_LONG_STR);
-      Serial.printf("\tPass: %s",pass);
-      wifi.seek(1,SeekCur);
-    }
-    wifi.close();
-    WiFi.begin(ssid,pass);
-  }
-  else{
+  if( !SPIFFS.exists(WPA_PATH) ){
     WiFi.mode(WIFI_AP);
     WiFi.softAP(AP_SSID,AP_PASS);
-    Serial.printf("Using default WiFi config \n");
+    Serial.printf("No WiFi config. Using default config \n");
+    return;
   }
+  WiFi.mode(WIFI_STA);
+  char ssid[MAX_LONG_STR];
+  char pass[MAX_LONG_STR];
+  File wifi = SPIFFS.open(WPA_PATH,"r");
+  Serial.printf("Reading wireless config file ... OK\n");
+  while(wifi.position() < wifi.size()){// Not function now, future use DONT DELETE
+    String rssid = wifi.readStringUntil(';');
+    rssid.toCharArray(ssid,MAX_LONG_STR);
+    Serial.printf("SSID: %s",ssid);
+    String rpass = wifi.readStringUntil(';');
+    rpass.toCharArray(pass,MAX_LONG_STR);
+    Serial.printf("\tPass: %s",pass);
+    wifi.seek(1,SeekCur);
+  }
+  wifi.close();
+  WiFi.begin(ssid,pass);
   Serial.print("\nStarting Wifi \nConnecting  ");
   int i = 0;
   for (int i=0 ;WiFi.status() != WL_CONNECTED && i< (WAIT_TIME*4); i++){ // Wait for the Wi-Fi to connect
@@ -294,7 +293,7 @@ void handlewifi(){
       SPIFFS.remove(WPA_PATH);
     if( SPIFFS.exists(LOG_CONF_PATH))
       SPIFFS.remove(LOG_CONF_PATH);
-     ESP.restart();
+    ESP.restart();
   }
 }
 

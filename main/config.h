@@ -13,7 +13,7 @@ char* WEB_OTA_PASS = "admin";
 
 bool logged = false; //Init without logged session
 
-const int WAIT_TIME = 40; //Time (in seconds) to wait wifi before enable AP mode
+const int WAIT_TIME = 60; //Time (in seconds) to wait wifi before enable AP mode
 
 #define GPIO0 D1
 bool gpio0_state=false;
