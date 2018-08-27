@@ -8,6 +8,10 @@
 
 #include "config.h"
 
+#define MAX_LONG_STR 100
+bool gpio1_state=false;
+bool gpio0_state=false;
+
 ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
@@ -36,6 +40,10 @@ void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
   pinMode(GPIO0,OUTPUT);
   pinMode(GPIO1,OUTPUT);
+  if( digitalRead(GPIO0) == HIGH)
+    gpio0_state = true;
+  if( digitalRead(GPIO1) == HIGH)
+    gpio0_state = true;
   startFS();
   read_login_config();
   startWiFi();
@@ -76,7 +84,7 @@ void loop(void) {
 void startWiFi(){
   Serial.printf("\n********** Starting WiFi **********\n\n");
   if( !SPIFFS.exists(WPA_PATH) ){
-    WiFi.mode(WIFI_AP);
+    //WiFi.mode(WIFI_AP);
     WiFi.softAP(AP_SSID,AP_PASS);
     Serial.printf("No WiFi config. Using default config \n");
     return;
@@ -170,20 +178,28 @@ void startFS(){
 }
 
 void startServer(){
+  /*server.on("/erase",[](){
+    SPIFFS.remove(LOG_CONF_PATH);
+    ESP.restart();
+    });*/
   server.on("/status",[](){
-    String message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP())+"\tMAC: "+WiFi.macAddress()+"\tSTATUS:"+String(WiFi.status())+"\n";
-    message += "GPIO0 ="+ String(gpio0_state)+" GPIO1="+String(gpio1_state)+"\n";
-    message += "Logged = " + String(logged) +"\n";
-    server.send(200,"text/plain",message);
-    });
-  server.on("/config",[](){//Delete this code 
-      if(!logged){
-        handlelogin();
-        return;
-      }
+    String message;
+    if(WiFi.status()  == WL_CONNECTED)
+      message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP())+"\t";
+    else
+      message = "SSID: AP_MODE\tIP GATEWAY: 192.168.4.1\t";
+    message +="MAC: "+WiFi.macAddress()+"\tSTATUS: "+String(WiFi.status())+"\n";
+    message += "GPIO0="+ String(gpio0_state)+" GPIO1="+String(gpio1_state)+"\n";
+    message += "Logged = " + String(logged) +"\t FW_VERSION: "+FW_VERSION+"\n";
+    if(SPIFFS.exists(WPA_PATH)){
+      message += "Wireless config file ... OK\n";
       File wifi = SPIFFS.open(WPA_PATH,"r");
-      size_t sent = server.streamFile(wifi,"text/html");
+      message += "\tStored data ->SSID: "+wifi.readStringUntil(';')+" Pass: "+wifi.readStringUntil(';')+"\n";
       wifi.close();
+     } 
+    if(SPIFFS.exists(LOG_CONF_PATH))
+      message += "Login config file ... OK\n";
+    server.send(200,"text/plain",message);
     });
   server.on("/",[](){
     if (!logged)
