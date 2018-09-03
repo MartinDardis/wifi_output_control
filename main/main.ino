@@ -8,7 +8,7 @@
 
 #include "config.h"
 
-#define MAX_LONG_STR 100
+#define MAX_LONG_STR 50
 bool gpio1_state=false;
 bool gpio0_state=false;
 
@@ -33,7 +33,7 @@ void read_login_config();
 bool change_user_pass();
 
 void setup() {
-  Serial.begin(115200);         
+  Serial.begin(SERIAL_SPEED);         
   Serial.println('\n');
   delay(1000);
   Serial.print("\nESP8266 OUT CONTROL - MARTIN DARDIS 2018\n");
@@ -84,12 +84,14 @@ void loop(void) {
 void startWiFi(){
   Serial.printf("\n********** Starting WiFi **********\n\n");
   if( !SPIFFS.exists(WPA_PATH) ){
-    //WiFi.mode(WIFI_AP);
+    WiFi.mode(WIFI_AP);
+    delay(20);
     WiFi.softAP(AP_SSID,AP_PASS);
     Serial.printf("No WiFi config. Using default config \n");
     return;
   }
   WiFi.mode(WIFI_STA);
+  delay(20);
   char ssid[MAX_LONG_STR];
   char pass[MAX_LONG_STR];
   File wifi = SPIFFS.open(WPA_PATH,"r");
@@ -163,6 +165,7 @@ void startOTA(){
     else if (error == OTA_END_ERROR) Serial.println("End Failed");
   });
  ArduinoOTA.begin();
+ httpUpdater.setup(&server,WEB_OTA_PATH,WEB_OTA_NAME,WEB_OTA_PASS);
  Serial.println("\nOTA ENABLED\n");
 }
 
@@ -178,10 +181,10 @@ void startFS(){
 }
 
 void startServer(){
-  /*server.on("/erase",[](){
+  server.on("/erase",[](){      //Coment this code section, only for dev use.
     SPIFFS.remove(LOG_CONF_PATH);
     ESP.restart();
-    });*/
+    });
   server.on("/status",[](){
     String message;
     if(WiFi.status()  == WL_CONNECTED)
@@ -191,6 +194,7 @@ void startServer(){
     message +="MAC: "+WiFi.macAddress()+"\tSTATUS: "+String(WiFi.status())+"\n";
     message += "GPIO0="+ String(gpio0_state)+" GPIO1="+String(gpio1_state)+"\n";
     message += "Logged = " + String(logged) +"\t FW_VERSION: "+FW_VERSION+"\n";
+    message += "Free Space :"+String(ESP.getFreeSketchSpace())+"\n";
     if(SPIFFS.exists(WPA_PATH)){
       message += "Wireless config file ... OK\n";
       File wifi = SPIFFS.open(WPA_PATH,"r");
@@ -237,7 +241,6 @@ void startServer(){
   server.on("/index.html",handleindex);
   server.on("/wifi.html",handlewifi);
   server.on("/style.css",handlecss);
-  httpUpdater.setup(&server,WEB_OTA_PATH,WEB_OTA_NAME,WEB_OTA_PASS);
   server.begin();
   Serial.printf("\n********** HTTP server started **********\n\n");
 }
@@ -365,8 +368,12 @@ void read_login_config(){
   File login = SPIFFS.open(LOG_CONF_PATH,"r");
   USERNAME = login.readStringUntil(';');
   PASSWORD = login.readStringUntil(';');
-  USERNAME.toCharArray(WEB_OTA_NAME,USERNAME.length()+1);
-  PASSWORD.toCharArray(WEB_OTA_PASS,PASSWORD.length()+1);
+  int user_leng = USERNAME.length()+1;
+  int pass_leng = PASSWORD.length()+1;
+  WEB_OTA_NAME = ((char*)malloc(sizeof(char)* (user_leng+2)));
+  WEB_OTA_PASS = ((char*)malloc(sizeof(char)* (pass_leng+2)));
+  USERNAME.toCharArray(WEB_OTA_NAME,user_leng);
+  PASSWORD.toCharArray(WEB_OTA_PASS,pass_leng);
   login.close();
 }
 

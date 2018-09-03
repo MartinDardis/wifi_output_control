@@ -1,10 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FW_VERSION 1.3
-
+#define FW_VERSION "1.3.1"
+#define SERIAL_SPEED 115200
 /* OUTPUTS SETTINGS*/
-
 #define GPIO0 D1
 #define GPIO1 D2
 
