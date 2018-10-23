@@ -13,36 +13,36 @@
 		<div class="container">
 			<header>
 				<div class='row'>
-						<nav class="navbar navbar-default">
-						  <div class="container-fluid">
-						    <div class="navbar-header">
-						      <a class="navbar-brand" href="#">WiFi Control</a>
-						    </div>
-						  </div>
-						</nav>
-					</div>
+					<nav class="navbar navbar-default">
+						<div class="container-fluid">
+							<div class="navbar-header">
+								<a class="navbar-brand" href="#">WiFi Control</a>
+							</div>
+						</div>
+					</nav>
+				</div>
 			</header>
-					<div class="panel-body">
-						<form id="loginForm" class="form-horizontal" method="POST" action="auth">
-							  <div class="form-group">
-							    <label for="username" class="col-sm-3 control-label">Usuario</label>
-							    <div class="col-sm-6">
-							      <input type="text" class="form-control required" id="username" placeholder="Usuario">
-							    </div>
-							  </div>
-							  <div class="form-group">
-							    <label for="password" class="col-sm-3 control-label">Contraseña</label>
-							    <div class="col-sm-6 ">
-							      <input type="password" class="form-control" id="password" placeholder="contraseña">
-							    </div>
-									<br><br>
-								  <div class="form-group">
-								    <div class="col-sm-offset-5 col-sm-10">
-								      <button type="submit" class="btn btn-default">Entrar</button>
-								    </div>
-								  </div>
-						</form>
+			<div class="panel-body">
+				<form id="loginForm" class="form-horizontal" method="POST" action="auth">
+					<div class="form-group">
+						<label for="username" class="col-sm-3 control-label">Usuario</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control required" id="username" name="user" placeholder="Usuario">
+						</div>
 					</div>
+					<div class="form-group">
+						<label for="password" class="col-sm-3 control-label">Contraseña</label>
+						<div class="col-sm-6 ">
+							<input type="password" class="form-control" id="password" name="pass" placeholder="contraseña">
+						</div>
+						<br><br>
+						<div class="form-group">
+							<div class="col-sm-offset-5 col-sm-10">
+								<button type="submit" class="btn btn-default">Entrar</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</body>
