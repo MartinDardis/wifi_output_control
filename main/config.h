@@ -10,14 +10,14 @@
 /* WIFI SETTINGS*/
 #define WPA_PATH "/wireless.txt"
 const int WAIT_TIME = 120; //Time (in seconds) to wait wifi before enable AP mode
-#define AP_SSID "ESP_8266"  
+#define AP_SSID "ESP_8266"
 #define AP_PASS "control"
 
 /* LOGGING SETTINGS*/
 #define LOG_CONF_PATH "/logging.dat"
 String USERNAME = "admin";//Default username
 String PASSWORD = "admin";//Default password
-bool logged = false; //Init without logged session
+bool logged = true; //Init without logged session
 
 /* OTA SETTINGS*/
 
@@ -26,7 +26,7 @@ char* WEB_OTA_NAME = "admin";//Default changes with username to login
 char* WEB_OTA_PASS = "admin"; //Default changes with password to login
 
 #define OTA_NAME "OUT_CONTROL"
-#define OTA_PASS "mdardis" 
+#define OTA_PASS "mdardis"
 #define OTA_MD5 "d4d0f48c29fa625f6acc2bf70a353a0b"
 
-#endif 
+#endif

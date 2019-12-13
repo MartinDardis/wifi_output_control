@@ -188,7 +188,7 @@ void startServer(){
   server.on("/status",[](){
     String message;
     if(WiFi.status()  == WL_CONNECTED)
-      message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP())+"\t";
+      message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP().toString())+"\t";
     else
       message = "SSID: AP_MODE\tIP GATEWAY: 192.168.4.1\t";
     message +="MAC: "+WiFi.macAddress()+"\tSTATUS: "+String(WiFi.status())+"\n";
@@ -394,5 +394,3 @@ bool change_user_pass(){
   Serial.printf("\t\t USER-PASS CHANGED \n");
   return true;
 }
-
-
