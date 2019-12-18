@@ -22,6 +22,7 @@ void startWiFi();
 void handleindex();
 void handlewifi();
 void handlecss();
+void handlebootstrap();
 void handlelogin();
 void handle_nolog();
 void handleerror();

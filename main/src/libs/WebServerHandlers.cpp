@@ -61,6 +61,7 @@ void startServer(){
   server.on("/index.html",handleindex);
   server.on("/wifi.html",handlewifi);
   server.on("/style.css",handlecss);
+  server.on("/bootstrap.css",handlebootstrap);
   server.begin();
   Serial.printf("\n********** HTTP server started **********\n\n");
 }
@@ -193,6 +194,14 @@ void handlewifi(){
 void handlecss(){
   Serial.print("-> /style.css");
   File file = SPIFFS.open("/style.css", "r");  // Open the file
+  size_t sent = server.streamFile(file,"text/css");    // Send it to the client
+  file.close();
+  Serial.print("...SENT\n");
+}
+
+void handlebootstrap(){
+  Serial.print("-> /bootstrap.css");
+  File file = SPIFFS.open("/bootstrap.css", "r");  // Open the file
   size_t sent = server.streamFile(file,"text/css");    // Send it to the client
   file.close();
   Serial.print("...SENT\n");

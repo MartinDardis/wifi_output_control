@@ -2,28 +2,34 @@
 	<title> ESP8266 Control By MDardis</title>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="bootstrap.css">
 		<link rel="stylesheet" href="style.css">
 		<h1>Control de salidas</h1>
 	</head>
-	<body>
-		<a href="/"><button class="button" style="button">Volver al inicio</button></a>
+	<body class="container">
+		<a href="/"class="btn btn-success">Volver al inicio</a>
 		<p>Cambiar Usuario y contrasena de inicio</p>
 		<form action="/user_set" method="POST">
-			Usuario actual:
-			<input type="text" name="actual_user">
-			<br><br>
-			Clave actual:
-			<input type="password" name="actual_pass">
-			<br><br>
-			Nuevo usuario:
-			<input type="text" name="new_user">
-			<br><br>
-			Nueva clave:
-			<input type='password' name="new_pass">
-			<br><br>
-			Re-ingrese nueva clave:
-			<input type="password" name="new_pass_check">
-			<br><br>
-			<input class="button" style="button" type="submit">
+			<div class="form-group">
+				<label>Usuario actual:</label>
+				<input type="text" class="form-control" name="actual_user">
+			</div>
+			<div class="form-group">
+				<label>Clave actual:</label>
+				<input class="form-control" type="password" name="actual_pass">
+			</div>
+			<div class="form-group">
+				<label>Nuevo usuario:</label>
+				<input class="form-control" type="text" name="new_user">
+			</div>
+			<div class="form-group">
+				<label>Nueva clave:</label>
+				<input class="form-control" type='password' name="new_pass">
+			</div>
+			<div class="form-group">
+				<label>Re-ingrese nueva clave:</label>
+				<input class="form-control" type="password" name="new_pass_check">
+			</div>
+			<input class="btn btn-success" type="submit">
 		</form>
 </html>

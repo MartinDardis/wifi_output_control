@@ -3,6 +3,8 @@
 #include <ESP8266WebServer.h>
 #include <WiFiClient.h>
 #include <ESP8266HTTPUpdateServer.h>
+#include <ESP8266mDNS.h>
+
 
 #include "FS.h"   // Include the SPIFFS library
 #include "libs/WebServerHandlers.h"
@@ -21,6 +23,7 @@ bool logged = LOGGED; //Init without logged session
 char* WEB_OTA_NAME = WEB_OTA_NAME_CT;//Default changes with username to login
 char* WEB_OTA_PASS = WEB_OTA_PASS_CT; //Default changes with password to login
 
+void initMDNS();
 
 void setup() {
   Serial.begin(SERIAL_SPEED);         
@@ -38,6 +41,7 @@ void setup() {
   read_login_config();
   startWiFi();
   startOTA();
+  initMDNS();
   startServer();
   Serial.print("\n READY. SERVER REQUESTs \n");
 }
@@ -69,5 +73,15 @@ void loop(void) {
       gpio1_state = false;
     }
   }
+}
+
+void initMDNS(){
+  if (!MDNS.begin(mDNS)) {             
+     Serial.println("Error iniciando mDNS");
+     return;
+  }
+  Serial.print("mDNS iniciado: ");
+  Serial.print(mDNS);
+  Serial.print(".local\n");
 }
 

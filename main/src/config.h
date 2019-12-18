@@ -4,7 +4,7 @@
 #define FW_VERSION "1.3.1"
 #define SERIAL_SPEED 115200
 /* OUTPUTS SETTINGS*/
-#define GPIO0 D1
+#define GPIO0 D0
 #define GPIO1 D2
 
 /* WIFI SETTINGS*/
@@ -31,5 +31,5 @@
 
 /* RANDOM STUFF*/
 #define MAX_LONG_STR 50
-
+#define mDNS "esp8266"
 #endif

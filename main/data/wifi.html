@@ -2,28 +2,38 @@
 	<title> ESP8266 Control By MDardis</title>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="bootstrap.css">
 		<link rel="stylesheet" href="style.css">
 		<h1>Control de salidas</h1>
 	</head>
-	<body>
-		<a href="/"><button class="button" style="button">Volver</button></a>
-		<p>Configuracion Wifi LAN</p>
-		<form action="" method="POST" onsubmit="alert('Config Wifi :OK - Guardado')">
-			SSID
-			<input type="text" name="ssid">
-			Password
-			<input type="text" name="pass">
-			<input class="button" style="button" type="submit">
-		</form>
-		<p> Opciones Adicionales </p>
-		<form action="" method="POST">
-			<button class="button" type="submit" name="reset" value="do">Reiniciar Dispositivo</button>
-			<br><br>
-			<button class="button" type="submit" name="erase" value="do">Restaurar Configuracion de Fabrica</button>
-		</form>
-		<a href="change_pass.html"><button class="button" style="button">Cambiar Usuario o Clave</button></a>
-		<br><br>
-		<a href="/update"><button class="button" style="button">Actualizar Firmware</button></a>
-
+	<body class="container">
+		<a href="/" class="btn btn-success">Volver</a>
+		<div class="col-md-12">
+			<div class="row"><h2>Configuracion Wifi LAN</h2></div>
+			<div class="row">
+				<form action="" method="POST" onsubmit="alert('Config Wifi :OK - Guardado')">
+					<div class="form-group">
+						<label>SSID</label>
+						<input class="form-control" type="text" name="ssid">
+					</div>
+					<div class="form-group">
+						<label>Password</label>
+						<input class="form-control" type="text" name="pass">
+					</div>
+					<input class="btn btn-success"type="submit">
+				</form>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="row"><h2> Opciones Adicionales </h2></div>
+			<div class="row">
+				<form action="" method="POST">
+						<button class="btn btn-danger" type="submit" name="reset" value="do">Reiniciar Dispositivo</button>
+						<button class="btn btn-success" type="submit" name="erase" value="do">Restaurar Configuracion de Fabrica</button>
+						<a href="change_pass.html" class="btn btn-success">Cambiar Usuario o Clave</a>
+						<a href="/update" class="btn btn-success">Actualizar Firmware</a>
+				</form>
+			</div>
+		</div>
 	</body>
 </html>
