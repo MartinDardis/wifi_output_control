@@ -1,62 +1,20 @@
 #include "WebServerHandlers.h"
 
 void startServer(){
-  server.on("/erase",[](){      //Coment this code section, only for dev use.
-    SPIFFS.remove(LOG_CONF_PATH);
-    ESP.restart();
-    });
-  server.on("/status",[](){
-    String message;
-    if(WiFi.status()  == WL_CONNECTED)
-      message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP().toString())+"\t";
-    else
-      message = "SSID: AP_MODE\tIP GATEWAY: 192.168.4.1\t";
-    message +="MAC: "+WiFi.macAddress()+"\tSTATUS: "+String(WiFi.status())+"\n";
-    message += "GPIO0="+ String(gpio0_state)+" GPIO1="+String(gpio1_state)+"\n";
-    message += "Logged = " + String(logged) +"\t FW_VERSION: "+FW_VERSION+"\n";
-    message += "Free Space :"+String(ESP.getFreeSketchSpace())+"\n";
-    if(SPIFFS.exists(WPA_PATH)){
-      message += "Wireless config file ... OK\n";
-      File wifi = SPIFFS.open(WPA_PATH,"r");
-      message += "\tStored data ->SSID: "+wifi.readStringUntil(';')+" Pass: "+wifi.readStringUntil(';')+"\n";
-      wifi.close();
-     } 
-    if(SPIFFS.exists(LOG_CONF_PATH))
-      message += "Login config file ... OK\n";
-    server.send(200,"text/plain",message);
-    });
-  server.on("/",[](){
-    if (!logged)
-      handlelogin();
-    else
-      handleindex();
-  });
+  if (DEBUG){
+    server.on("/erase",[](){      //Coment this code section, only for dev use.
+      SPIFFS.remove(LOG_CONF_PATH);
+      ESP.restart();
+      });
+  }
   server.on("/disconnect",[](){
     logged = false;
     handlelogin();
-    });
-  server.on("/auth",[](){
-    if(logged){
-      handleindex();
-    }
-    else if(server.hasArg("user") && server.hasArg("pass")){
-      if(server.arg("user") == USERNAME && server.arg("pass") == PASSWORD){
-        Serial.printf("AUTH OK\n");
-        logged = true;
-        handleindex();
-      }}
-    else
-        Serial.printf("AUTH ERROR\n");
-        handleerror();
   });
-  server.on("/user_set",[](){
-     if(!change_user_pass()){
-        logged = false;
-        handle_change_error();
-     }
-     logged = false;
-     handlelogin();
-    });
+  server.on("/",[](){  !logged ? handlelogin() : handleindex();  });
+  server.on("/user_set",handle_user_set);
+  server.on("/status",handle_report_status);
+  server.on("/auth",handle_auth);
   server.on("/change_pass.html",handlechange);
   server.on("/index.html",handleindex);
   server.on("/wifi.html",handlewifi);
@@ -201,9 +159,15 @@ void handlecss(){
 
 void handlebootstrap(){
   Serial.print("-> /bootstrap.css");
-  File file = SPIFFS.open("/bootstrap.css", "r");  // Open the file
-  size_t sent = server.streamFile(file,"text/css");    // Send it to the client
-  file.close();
+  if (WiFi.status() == 3){
+    Serial.print(" USING CDN!");
+    server.sendHeader("Location", String(BOOTSTRAP_CDN), true);
+    server.send ( 302, "text/css", "");
+  }else {
+    File file = SPIFFS.open("/bootstrap.css", "r");  // Open the file
+    size_t sent = server.streamFile(file,"text/css");    // Send it to the client
+    file.close();
+  }
   Serial.print("...SENT\n");
 }
  
@@ -227,3 +191,46 @@ void handle_change_error(){
   Serial.print("...SENT\n");
 }
 
+void handle_report_status(){
+  String message;
+  if(WiFi.status()  == WL_CONNECTED)
+    message = "SSID: "+WiFi.SSID()+"\tIP: "+ String(WiFi.localIP().toString())+"\t";
+  else
+    message = "SSID: AP_MODE\tIP GATEWAY: 192.168.4.1\t";
+  message +="MAC: "+WiFi.macAddress()+"\tSTATUS: "+String(WiFi.status())+"\n";
+  message += "GPIO0="+ String(gpio0_state)+" GPIO1="+String(gpio1_state)+"\n";
+  message += "Logged = " + String(logged) +"\t FW_VERSION: "+FW_VERSION+"\n";
+  message += "Free Space :"+String(ESP.getFreeSketchSpace())+"\n";
+  if(SPIFFS.exists(WPA_PATH)){
+    message += "Wireless config file ... OK\n";
+    File wifi = SPIFFS.open(WPA_PATH,"r");
+    message += "\tStored data ->SSID: "+wifi.readStringUntil(';')+" Pass: "+wifi.readStringUntil(';')+"\n";
+    wifi.close();
+  } 
+  if(SPIFFS.exists(LOG_CONF_PATH))
+    message += "Login config file ... OK\n";
+  server.send(200,"text/plain",message);
+}
+
+void handle_auth(){
+  if(logged){
+    handleindex();
+  }
+  else if(server.hasArg("user") && server.hasArg("pass")){
+    if(server.arg("user") == USERNAME && server.arg("pass") == PASSWORD){
+      Serial.printf("AUTH OK\n");
+      logged = true;
+      handleindex();
+    }}
+  else
+      Serial.printf("AUTH ERROR\n");
+      handleerror();
+}
+
+void handle_user_set(){
+      logged = false;
+    if(!change_user_pass()){
+        handle_change_error();
+    }
+    handlelogin();
+}

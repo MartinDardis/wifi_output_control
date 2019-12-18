@@ -1,10 +1,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FW_VERSION "1.3.1"
+#define FW_VERSION "1.4.0"
 #define SERIAL_SPEED 115200
 /* OUTPUTS SETTINGS*/
-#define GPIO0 D0
+#define GPIO0 D1
 #define GPIO1 D2
 
 /* WIFI SETTINGS*/
@@ -22,8 +22,8 @@
 /* OTA SETTINGS*/
 
 #define WEB_OTA_PATH "/update"
-#define WEB_OTA_NAME_CT "admin";//Default changes with username to login
-#define WEB_OTA_PASS_CT "admin"; //Default changes with password to login
+#define WEB_OTA_NAME_CT USERNAME_CT;//Default changes with username to login
+#define WEB_OTA_PASS_CT PASSWORD_CT; //Default changes with password to login
 
 #define OTA_NAME "OUT_CONTROL"
 #define OTA_PASS "mdardis"
@@ -32,4 +32,6 @@
 /* RANDOM STUFF*/
 #define MAX_LONG_STR 50
 #define mDNS "esp8266"
+#define BOOTSTRAP_CDN "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+#define DEBUG true
 #endif

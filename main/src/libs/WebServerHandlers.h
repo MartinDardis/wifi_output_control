@@ -28,5 +28,9 @@ void handle_nolog();
 void handleerror();
 void handlechange();
 void handle_change_error();
+void handle_report_status();
+void handle_auth();
+void handle_user_set();
+
 
 #endif

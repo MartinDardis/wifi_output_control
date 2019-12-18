@@ -35,6 +35,7 @@ bool write_wifi_config_file(String rssid,String rpass){
     wifi.print(rssid+";"+rpass+";\n");
     wifi.close();
     Serial.printf("... OK \n");
+    return true;
 }
 
 
@@ -63,4 +64,5 @@ bool write_login_config(String new_username, String new_pass){
   login.print(new_username+";"+new_pass+";\n");
   login.close();
   Serial.printf("... OK \n");
+  return true;
 }
