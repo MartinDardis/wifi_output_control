@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FW_VERSION "1.4.0"
+#define FW_VERSION "1.4.1"
 #define SERIAL_SPEED 115200
 /* OUTPUTS SETTINGS*/
 #define GPIO0 D1
@@ -9,7 +9,7 @@
 
 /* WIFI SETTINGS*/
 #define WPA_PATH "/wireless.txt"
-#define WAIT_TIME_CT 120; //Time (in seconds) to wait wifi before enable AP mode
+#define WAIT_TIME_CT 30; //Time (in seconds) to wait wifi before enable AP mode
 #define AP_SSID "ESP_8266"
 #define AP_PASS "control"
 

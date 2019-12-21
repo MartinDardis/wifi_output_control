@@ -8,6 +8,7 @@
 #include <ESP8266WiFi.h>
 #include "FS.h"   // Include the SPIFFS library
 #include "config.h"
+#include <ArduinoJson.h>
 
 extern ESP8266WebServer server;
 extern const int WAIT_TIME; //Time (in seconds) to wait wifi before enable AP mode
@@ -31,6 +32,7 @@ void handle_change_error();
 void handle_report_status();
 void handle_auth();
 void handle_user_set();
+void handle_status_json();
 
 
 #endif
