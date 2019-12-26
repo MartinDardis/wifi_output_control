@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Control</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="welcome-card">
+    <img src="/assets/esp8266.png" alt=""/>
+    <ion-card-header>
+      <ion-card-subtitle>ESP8266</ion-card-subtitle>
+      <ion-card-title>Control de salidas</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-label>Estado: {{this.info && this.info.connected ? 'Conectado':'Desconectado'}}</ion-label>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list lines="none">
+    <ion-list-header>
+      <ion-label>Salidas</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let input of inputs" (click)="changeState(input)" [disabled]=" !this.info.connected || !input.enable">
+        <ion-label *ngIf="!edit">{{input.name}}</ion-label>
+        <ion-icon [name]="icon" [color]="input.state? icon_enable : icon_disabled"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -33,6 +33,7 @@ void handle_report_status();
 void handle_auth();
 void handle_user_set();
 void handle_status_json();
+void handleNotFound();
 
 
 #endif

@@ -15,14 +15,15 @@ void startServer(){
   });
   server.on("/",[](){  !logged ? handlelogin() : handleindex();  });
   server.on("/user_set",handle_user_set);
-  server.on("/info",handle_report_status);
-  server.on("/status",handle_status_json);
+  server.on("/info",HTTP_GET ,handle_report_status);
+  server.on("/status",HTTP_GET,handle_status_json);
   server.on("/auth",handle_auth);
   server.on("/change_pass.html",handlechange);
   server.on("/index.html",handleindex);
   server.on("/wifi.html",handlewifi);
   server.on("/style.css",handlecss);
   server.on("/bootstrap.css",handlebootstrap);
+  server.onNotFound(handleNotFound);
   server.begin();
   Serial.printf("\n********** HTTP server started **********\n\n");
 }
@@ -246,5 +247,20 @@ void handle_status_json(){
     serializeJson(jsonDoc,message);
     server.send(200,"application/json",message);
     jsonDoc.clear();
+}
+
+void handleNotFound(){
+    if (server.method() == HTTP_OPTIONS)
+    {
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.sendHeader("Access-Control-Max-Age", "10000");
+        server.sendHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
+        server.sendHeader("Access-Control-Allow-Headers", "*");
+        server.send(204);
+    }
+    else
+    {
+        server.send(404, "text/plain", "");
+    }
 }
 
