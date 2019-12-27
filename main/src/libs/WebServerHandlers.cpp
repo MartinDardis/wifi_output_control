@@ -211,7 +211,9 @@ void handle_report_status(){
   jsonDoc["wifi_data"] = wifi;
   jsonDoc["info"] = info;
   serializeJson(jsonDoc,message);
-  server.send(200,"text/plain",message);
+  server.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  server.send(200,"application/json",message);
   jsonDoc.clear();
 }
 
@@ -245,6 +247,9 @@ void handle_status_json(){
     doc["gpio1"] =  gpio1_state?"true":"false";
     jsonDoc["outputs"] = doc;
     serializeJson(jsonDoc,message);
+    server.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+    server.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    server.sendHeader("Access-Control-Allow-Origin", "*");
     server.send(200,"application/json",message);
     jsonDoc.clear();
 }
@@ -252,11 +257,11 @@ void handle_status_json(){
 void handleNotFound(){
     if (server.method() == HTTP_OPTIONS)
     {
-        server.sendHeader("Access-Control-Allow-Origin", "*");
-        server.sendHeader("Access-Control-Max-Age", "10000");
-        server.sendHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
-        server.sendHeader("Access-Control-Allow-Headers", "*");
-        server.send(204);
+      server.sendHeader("Access-Control-Max-Age", "10000");
+      server.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+      server.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      server.sendHeader("Access-Control-Allow-Origin","*");
+      server.send(204);
     }
     else
     {
