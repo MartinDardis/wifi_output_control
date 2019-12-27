@@ -9,27 +9,22 @@ import {Storage} from '@ionic/storage';
 export class ConnectionService {
 
     connInfoObs: Subject<any> = new Subject();
-    info;
 
     constructor(private storage: Storage) {
-        this.info = DEFAULT_CONN_INFO;
-        this.storage.get('connectionInfo').then(infoSaved => {
-            console.log(infoSaved);
-            if (infoSaved) {
-                this.info = JSON.parse(infoSaved);
-            }
+        this.connInfoObs.subscribe(info => {
+            this.storage.set('connectionInfo', info);
         });
     }
 
+    info() {
+       return this.storage.get('connectionInfo');
+    }
     getConnectionInfo() {
-        this.connInfoObs.next(this.info);
         return this.connInfoObs.asObservable();
     }
 
     updateConnectionInfo(info) {
-        this.storage.set('connectionInfo', JSON.stringify(info));
-        this.info = info;
-        this.connInfoObs.next(this.info);
+        this.connInfoObs.next(info);
     }
 
     isConnected() {
@@ -37,17 +32,21 @@ export class ConnectionService {
             if (!info) {
                 return false;
             }
-            return JSON.parse(info).connected;
+            return info.connected;
         });
     }
 
     setConnectionStatus(b: boolean) {
-        this.info.connected = b;
-        this.connInfoObs.next(this.info);
+        this.storage.get('connectionInfo').then(infoSaved => {
+            if (infoSaved === null) {
+                infoSaved = DEFAULT_CONN_INFO;
+            }
+            infoSaved.connected = b;
+            this.connInfoObs.next(infoSaved);
+        });
     }
 
     resetConnInfo() {
-        this.storage.set('connectionInfo', JSON.stringify(DEFAULT_CONN_INFO));
         this.connInfoObs.next(DEFAULT_CONN_INFO);
     }
 }

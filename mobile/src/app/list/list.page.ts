@@ -3,6 +3,7 @@ import {AlertController} from '@ionic/angular';
 import {ConnectionService} from '../Services/connection.service';
 import {Subscription} from 'rxjs';
 import {RemoteService} from '../Services/remote.service';
+import {DEBUG_MODE, DEFAULT_CONN_INFO} from '../../environments/environment';
 
 @Component({
     selector: 'app-list',
@@ -12,9 +13,15 @@ import {RemoteService} from '../Services/remote.service';
 export class ListPage implements OnInit {
     connectionInfo;
     subscription: Subscription;
+    debugEnable: boolean = DEBUG_MODE;
 
-    constructor(public alertController: AlertController, private connService: ConnectionService,private remoto: RemoteService) {
-        this.connectionInfo = this.connService.info;
+    constructor(public alertController: AlertController, private connService: ConnectionService, private remoto: RemoteService) {
+        this.connectionInfo = DEFAULT_CONN_INFO;
+        this.connService.info().then(res => {
+            if (res) {
+                this.connectionInfo = res;
+            }
+        });
         this.subscription = this.connService.getConnectionInfo().subscribe(info => {
             this.connectionInfo = info;
         });
@@ -27,10 +34,6 @@ export class ListPage implements OnInit {
         this.subscription.unsubscribe();
     }
 
-    // add back when alpha.4 is out
-    // navigate(item) {
-    //   this.router.navigate(['/list', JSON.stringify(item)]);
-    // }
     async cleanStorage() {
         sessionStorage.clear();
         this.connService.resetConnInfo();
@@ -45,23 +48,12 @@ export class ListPage implements OnInit {
         const alert = await this.alertController.create({
             header: 'Establecer Conexion',
             message: 'Inserte la URL/IP del modulo remoto',
-            inputs: [
-                {
-                    label: 'URL',
-                    name: 'url',
-                    type: 'text',
-                    placeholder: 'http://esp8266.local',
-                }
-            ],
+            inputs: [{label: 'URL', name: 'url', type: 'text', value: this.connectionInfo.serverUrl }],
             buttons: [
+                {text: 'Cancelar', role: 'cancel', cssClass: 'secondary'},
                 {
-                    text: 'Cancelar',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                }, {
                     text: 'Aceptar',
                     handler: resp => {
-
                         if (resp.url.length > 0) {
                             if (resp.url.indexOf('http') < 0) {
                                 resp.url = 'http://' + resp.url;
@@ -73,7 +65,6 @@ export class ListPage implements OnInit {
                 }
             ]
         });
-
         await alert.present();
     }
 

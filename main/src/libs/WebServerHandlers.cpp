@@ -4,25 +4,25 @@ DynamicJsonDocument jsonDoc(2048);
 
 void startServer(){
   if (DEBUG){
-    server.on("/erase",[](){      //Coment this code section, only for dev use.
+    server.on("/erase",HTTP_GET,[](){      //Coment this code section, only for dev use.
       SPIFFS.remove(LOG_CONF_PATH);
       ESP.restart();
       });
   }
-  server.on("/disconnect",[](){
+  server.on("/disconnect",HTTP_GET,[](){
     logged = false;
     handlelogin();
   });
-  server.on("/",[](){  !logged ? handlelogin() : handleindex();  });
-  server.on("/user_set",handle_user_set);
+  server.on("/",HTTP_GET,[](){  !logged ? handlelogin() : handleindex();  });
+  server.on("/user_set",HTTP_POST,handle_user_set);
   server.on("/info",HTTP_GET ,handle_report_status);
   server.on("/status",HTTP_GET,handle_status_json);
-  server.on("/auth",handle_auth);
-  server.on("/change_pass.html",handlechange);
-  server.on("/index.html",handleindex);
-  server.on("/wifi.html",handlewifi);
-  server.on("/style.css",handlecss);
-  server.on("/bootstrap.css",handlebootstrap);
+  server.on("/auth",HTTP_POST,handle_auth);
+  server.on("/change_pass.html",HTTP_GET,handlechange);
+  server.on("/index.html",HTTP_GET,handleindex);
+  server.on("/wifi.html",HTTP_GET,handlewifi);
+  server.on("/style.css",HTTP_GET,handlecss);
+  server.on("/bootstrap.css",HTTP_GET,handlebootstrap);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.printf("\n********** HTTP server started **********\n\n");
@@ -231,7 +231,7 @@ void handle_auth(){
 }
 
 void handle_user_set(){
-      logged = false;
+    logged = false;
     if(!change_user_pass()){
         handle_change_error();
     }

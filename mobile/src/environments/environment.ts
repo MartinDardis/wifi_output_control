@@ -3,13 +3,21 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false
 };
 
 export const DEFAULT_CONN_INFO = {
-  serverUrl: 'http://192.168.4.1',
-  connected: false
+    serverUrl: 'http://192.168.4.1',
+    connected: false
 };
+
+export const DEBUG_MODE = true;
+export const OUTPUTS = [
+    { name: 'GPIO 1', alias: 'gpio0', state: false, enable: false },
+    { name: 'GPIO 2', alias: 'gpio1', state: false, enable: false },
+    { name: 'GPIO 3', alias: 'gpio2', state: false, enable: false },
+    { name: 'GPIO 4', alias: 'gpio3', state: false, enable: false },
+  ];
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
